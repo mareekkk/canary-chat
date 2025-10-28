@@ -1,0 +1,30 @@
+{
+  "name": "Canary Builds",
+  "short_name": "Canary Builds",
+  "description": "Canary Builds is an open, extensible, user-friendly interface for AI that adapts to your workflow.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/canary-logo.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "/canary-logo.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ],
+  "share_target": {
+    "action": "/",
+    "method": "GET",
+    "params": {
+      "text": "shared"
+    }
+  }
+}

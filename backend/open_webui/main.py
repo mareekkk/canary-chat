@@ -13,6 +13,7 @@ from uuid import uuid4
 
 
 from contextlib import asynccontextmanager
+from pathlib import Path
 from urllib.parse import urlencode, parse_qs, urlparse
 from pydantic import BaseModel
 from sqlalchemy import text
@@ -2028,34 +2029,41 @@ async def oauth_login_callback(provider: str, request: Request, response: Respon
 async def get_manifest_json():
     if app.state.EXTERNAL_PWA_MANIFEST_URL:
         return requests.get(app.state.EXTERNAL_PWA_MANIFEST_URL).json()
-    else:
-        return {
-            "name": app.state.WEBUI_NAME,
-            "short_name": app.state.WEBUI_NAME,
-            "description": f"{app.state.WEBUI_NAME} is an open, extensible, user-friendly interface for AI that adapts to your workflow.",
-            "start_url": "/",
-            "display": "standalone",
-            "background_color": "#343541",
-            "icons": [
-                {
-                    "src": "/static/logo.png",
-                    "type": "image/png",
-                    "sizes": "500x500",
-                    "purpose": "any",
-                },
-                {
-                    "src": "/static/logo.png",
-                    "type": "image/png",
-                    "sizes": "500x500",
-                    "purpose": "maskable",
-                },
-            ],
-            "share_target": {
-                "action": "/",
-                "method": "GET",
-                "params": {"text": "shared"},
+    custom_manifest_path = STATIC_DIR / "canary-manifest.json"
+    if custom_manifest_path.exists():
+        try:
+            with custom_manifest_path.open("r", encoding="utf-8") as manifest_file:
+                return json.load(manifest_file)
+        except Exception as e:
+            log.warning(f"Failed to load custom manifest.json: {e}")
+
+    return {
+        "name": app.state.WEBUI_NAME,
+        "short_name": app.state.WEBUI_NAME,
+        "description": f"{app.state.WEBUI_NAME} is an open, extensible, user-friendly interface for AI that adapts to your workflow.",
+        "start_url": "/",
+        "display": "standalone",
+        "background_color": "#343541",
+        "icons": [
+            {
+                "src": "/static/logo.png",
+                "type": "image/png",
+                "sizes": "500x500",
+                "purpose": "any",
             },
-        }
+            {
+                "src": "/static/logo.png",
+                "type": "image/png",
+                "sizes": "500x500",
+                "purpose": "maskable",
+            },
+        ],
+        "share_target": {
+            "action": "/",
+            "method": "GET",
+            "params": {"text": "shared"},
+        },
+    }
 
 
 @app.get("/opensearch.xml")

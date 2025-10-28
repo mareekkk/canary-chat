@@ -2,30 +2,33 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<link rel="icon" type="image/png" href="/static/favicon.png" crossorigin="use-credentials" />
 		<link
 			rel="icon"
 			type="image/png"
-			href="/static/favicon-96x96.png"
+			href="/canary-logo.png?v=20251028"
+			crossorigin="use-credentials"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			href="/canary-logo.png?v=20251028"
 			sizes="96x96"
 			crossorigin="use-credentials"
 		/>
 		<link
-			rel="icon"
-			type="image/svg+xml"
-			href="/static/favicon.svg"
+			rel="shortcut icon"
+			href="/canary-logo.png?v=20251028"
 			crossorigin="use-credentials"
 		/>
-		<link rel="shortcut icon" href="/static/favicon.ico" crossorigin="use-credentials" />
 		<link
 			rel="apple-touch-icon"
 			sizes="180x180"
-			href="/static/apple-touch-icon.png"
+			href="/canary-logo.png?v=20251028"
 			crossorigin="use-credentials"
 		/>
 		<link
 			rel="manifest"
-			href="/manifest.json"
+			href="/manifest.json?v=20251028"
 			crossorigin="use-credentials"
 			crossorigin="use-credentials"
 		/>
@@ -37,6 +40,7 @@
 		<meta name="robots" content="noindex,nofollow" />
 
 		<script src="/static/loader.js" defer crossorigin="use-credentials"></script>
+		<script src="/canary-branding.js?v=20251027" defer crossorigin="use-credentials"></script>
 		<link rel="stylesheet" href="/static/custom.css" crossorigin="use-credentials" />
 
 		<script>
@@ -48,6 +52,15 @@
 		<script>
 			// On page load or when changing themes, best to add inline in `head` to avoid FOUC
 			(() => {
+				const removeSplash = () => {
+					const splash = document.getElementById('splash-screen');
+					if (splash) {
+						splash.remove();
+					}
+				};
+
+				const splashSafetyTimer = setTimeout(removeSplash, 8000);
+
 				const metaThemeColorTag = document.querySelector('meta[name="theme-color"]');
 				const prefersDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
@@ -89,13 +102,11 @@
 						}
 					}
 				});
-				const isDarkMode = document.documentElement.classList.contains('dark');
-
 				const logo = document.createElement('img');
 				logo.id = 'logo';
 				logo.style =
 					'position: absolute; width: auto; height: 6rem; top: 44%; left: 50%; transform: translateX(-50%); display:block;';
-				logo.src = isDarkMode ? '/static/splash-dark.png' : '/static/splash.png';
+				logo.src = '/canary-logo.png';
 
 				document.addEventListener('DOMContentLoaded', function () {
 					const splash = document.getElementById('splash-screen');
@@ -105,10 +116,21 @@
 
 					if (splash) splash.prepend(logo);
 				});
+
+				// Ensure splash clears even if hydration is delayed
+				window.addEventListener('load', () => {
+					clearTimeout(splashSafetyTimer);
+					removeSplash();
+				});
+
+				document.addEventListener('DOMContentLoaded', () => {
+					// In case load event never fires (rare PWA edge), remove splash after DOM ready
+					setTimeout(removeSplash, 2000);
+				});
 			})();
 		</script>
 
-		<title>Canary Chat</title>
+		<title>Canary Builds</title>
 
 		%sveltekit.head%
 	</head>
@@ -143,7 +165,7 @@
 				<img
 					id="logo-her"
 					style="width: auto; height: 13rem"
-					src="/static/splash.png"
+					src="/canary-logo.png"
 					class="animate-pulse-fast"
 				/>
 

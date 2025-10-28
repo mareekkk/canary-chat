@@ -1,0 +1,20 @@
+:root {
+	--canary-logo-bg: transparent;
+}
+
+img[data-canary-logo='true'] {
+	filter: none !important;
+	border-radius: 0 !important;
+	background: var(--canary-logo-bg) !important;
+	object-fit: contain;
+}
+
+html.dark img[data-canary-logo='true'] {
+	background: var(--canary-logo-bg) !important;
+}
+
+img[data-canary-logo='true']#logo,
+img[data-canary-logo='true']#logo-her {
+	max-height: 10rem;
+	width: auto;
+}
