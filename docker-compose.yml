@@ -4,6 +4,9 @@ services:
     build:
       context: /home/mark/llm-server/openwebui         
       dockerfile: Dockerfile 
+      args:
+        UID: "${UID}"
+        GID: "${GID}"
     container_name: openwebui
     user: "${UID}:${GID}"
     ports:
